@@ -17,113 +17,117 @@ export default class Game extends Component<IProps, IState> {
     constructor (props: IProps) {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
-        this.getLiveVirus = this.getLiveVirus.bind(this);
-        this.getDeadVirus = this.getDeadVirus.bind(this);
         this.sketch = this.sketch.bind(this);
-
         this.state = {
-            liveVirus: [],
-            deadVirus: []
         }
-    }
+    };
+
+    componentDidMount() {
+    };
 
     sketch (p: any) {
-        const width = window.innerWidth; //1600;
-        const height = window.innerHeight; //825;
-        const imageSizeX = width/32;
-        const imageSizeY = height/10
 
-        let x: number, y: number;      
-        let liveimg: any;
-        let deadimg: any;
-        let sprayimg: any;
-        let waterimg: any;
-        let xArray = [] as any;
+        let width = window.innerWidth - 40; let height = window.innerHeight-40;
+        let sprayImg; let waterImg; let liveImg; let deadImg;
+        let runwater;
+        let virus = [] as any;
 
         p.preload = function() {
-            liveimg = p.loadImage(liveCorona);
-            deadimg = p.loadImage(deadCorona);
-            sprayimg = p.loadImage(spray)
-            waterimg = p.loadImage(water);
-        }
-
-        p.setup = function () {
-            p.createCanvas(width, height);
-            liveimg.resize(imageSizeX, imageSizeY);
-            deadimg.resize(imageSizeX, imageSizeY);
-            sprayimg.resize(imageSizeX, imageSizeY);
-            waterimg.resize(50, 50);
-            x = 50;
-            y = 500;
+            waterImg = p.loadImage(water);
+            sprayImg = p.loadImage(spray)
+            liveImg = p.loadImage(liveCorona);
+            deadImg = p.loadImage(deadCorona);
         };
 
-        p.draw = function () {
-            p.background(1000);
-            p.image(sprayimg, 0, 200)
+        p.setup = function() {
+            p.createCanvas(width, height);
+            sprayImg.resize(50, 100);
+            waterImg.resize(50, 50);
+            liveImg.resize(50, 100);
+            deadImg.resize(50, 100);
 
-            p.image(waterimg, x, 200)
-            x = x + 3;
-            xArray.push(x)
-            if (x > width) {
-                x = 0;
+            runwater = new WaterImage(50, 100, waterImg);
+            for (let i=1; i < 11; i++){
+                virus[i] = new VirusImage(width - (i*50), height-100, liveImg);
             }
+        };
 
-            for (var i = 0; i < 10; i++) {
-                let spot = width-((i*50) + 100)
-                p.image(liveimg, spot, y)
-                
-                if (xArray.includes(spot)) {
-                    p.image(deadimg, width -((i*50) + 100), y)
+        p.draw = function() {
+            p.background(0);
+
+            runwater.show()
+            runwater.move()
+
+            for (let i=1; i < 11; i++){
+                virus[i].show();
+                virus[i].move();
+
+                let c = p.color(200, 0,100)
+
+                if (virus[i].x < runwater.x+50 && virus[i].x+50 > runwater.x &&
+                    virus[i].y > runwater.y+50 && virus[i].y+100 < runwater.y) {
+                        p.fill(c)
+                }
+
+                if (virus[i].y < 50) {
+                    p.fill(c)
                 }
             }
 
-            y = y - 1;
-            if (y < 0) {
-                y = height;
+            let d = p.dist(virus)
+        };
+
+        class VirusImage { 
+            private x: number;
+            private y: number;
+            private img: any;
+            constructor(x: number, y: number, img: any) {
+                this.x = x; 
+                this.y = y;
+                this.img = img;
             }
 
+            move() {
+                // this.x = this.x + p.random(-2 , 2)
+                this.y = this.y - 2;
+                if (this.y < 0) {
+                    this.y = height;
+                }
+            }
 
-        };
+            show() {
+                // p.image(this.img, this.x, this.y);
+                p.rect(this.x, this.y, 50, 100);
+            }
+        }
+
+        class WaterImage {
+            private x: number;
+            private y: number;
+            private img: any;
+            constructor(x: number, y: number, img: any) {
+                this.x = x; 
+                this.y = y;
+                this.img = img;
+            }
+
+            move() {
+                this.x = this.x + 4;
+                if (this.x > width) {
+                    this.x = 50;
+                }
+                // this.y = this.y + p.random(-2 , 2)
+            }
+
+            show() {
+                // p.image(this.img, this.x, this.y);
+                p.rect(this.x, this.y, 50, 50);
+            }
+
+        }
 
     };
 
-    async componentDidMount() {
-        await this.getLiveVirus();
-        await this.getDeadVirus();
-    }
-
-    async getLiveVirus(){
-        let liveVirus = [] as any;
-        for (let i = 0; i<10; i++ ) {
-            let object = {
-                'id': i,
-                'url': liveCorona,
-                'status': 'live'
-            }
-            liveVirus.push(object)
-        }
-
-        await this.setState ({
-            liveVirus : liveVirus
-        })
-    }
-
-    async getDeadVirus(){
-        let deadVirus = [] as any;
-        for (let i = 0; i<10; i++ ) {
-            let object = {
-                'id': i,
-                'url': deadCorona,
-                'status': 'dead'
-            }
-            deadVirus.push(object)
-        }
-         
-        await this.setState ({
-            deadVirus : deadVirus
-        })
-
-    }
     render() {
         return (
             <div style={{ margin: 20 }}>
