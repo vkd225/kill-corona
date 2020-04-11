@@ -11,6 +11,7 @@ interface IProps {
 }
 
 interface IState {
+    virusR : any;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -19,6 +20,7 @@ export default class Game extends Component<IProps, IState> {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.sketch = this.sketch.bind(this);
         this.state = {
+            virusR : []
         }
     };
 
@@ -31,6 +33,7 @@ export default class Game extends Component<IProps, IState> {
         let sprayImg; let waterImg; let liveImg; let deadImg;
         let runwater;
         let virus = [] as any;
+        let virArr = [] as any
 
         p.preload = function() {
             waterImg = p.loadImage(water);
@@ -46,35 +49,36 @@ export default class Game extends Component<IProps, IState> {
             liveImg.resize(50, 100);
             deadImg.resize(50, 100);
 
-            runwater = new WaterImage(50, 100, waterImg);
+            runwater = new WaterImage(100, 100, waterImg);
+            
             for (let i=1; i < 11; i++){
                 virus[i] = new VirusImage(width - (i*50), height-100, liveImg);
+            }
+
+            for (let i=1; i < 11; i++){
+                virArr.push('alive')
             }
         };
 
         p.draw = function() {
             p.background(0);
-
             runwater.show()
             runwater.move()
 
             for (let i=1; i < 11; i++){
-                virus[i].show();
-                virus[i].move();
-
-                let c = p.color(200, 0,100)
-
-                if (virus[i].x < runwater.x+50 && virus[i].x+50 > runwater.x &&
-                    virus[i].y > runwater.y+50 && virus[i].y+100 < runwater.y) {
-                        p.fill(c)
+                virus[i].show();                
+                   
+                if (virus[i].isDead(runwater)){
+                    virArr.splice(i, 1, 'dead')
                 }
 
-                if (virus[i].y < 50) {
-                    p.fill(c)
+                if(virArr[i] === 'dead'){
+                    virus[i].moveDown();
+                    p.fill(0,0,255)
+                } else {
+                    virus[i].moveUp();
                 }
             }
-
-            let d = p.dist(virus)
         };
 
         class VirusImage { 
@@ -87,17 +91,34 @@ export default class Game extends Component<IProps, IState> {
                 this.img = img;
             }
 
-            move() {
-                // this.x = this.x + p.random(-2 , 2)
+            moveUp() {
                 this.y = this.y - 2;
-                if (this.y < 0) {
+                if (this.y < -100) {
+                    this.y = -100;
+                }
+            }
+
+            moveDown() {
+                this.y = this.y + 2;
+                if (this.y > height) {
                     this.y = height;
                 }
             }
 
             show() {
-                // p.image(this.img, this.x, this.y);
-                p.rect(this.x, this.y, 50, 100);
+                p.image(this.img, this.x, this.y);
+                // p.rect(this.x, this.y, 50, 100);
+            }
+
+            // Checks if the virus is dead or alive
+            isDead(runwater) {
+                if(runwater.y > this.y+100 || this.y > runwater.y+50) {
+                    return false
+                }
+                if(runwater.x > this.x+50 || this.x > runwater.x+50) {
+                    return false
+                }
+                return true
             }
         }
 
@@ -113,19 +134,16 @@ export default class Game extends Component<IProps, IState> {
 
             move() {
                 this.x = this.x + 4;
-                if (this.x > width) {
-                    this.x = 50;
-                }
-                // this.y = this.y + p.random(-2 , 2)
+                // if (this.x > width) {
+                //     this.x = 50;
+                // }
             }
 
             show() {
-                // p.image(this.img, this.x, this.y);
-                p.rect(this.x, this.y, 50, 50);
+                p.image(this.img, this.x, this.y);
+                // p.rect(this.x, this.y, 50, 50);
             }
-
         }
-
     };
 
     render() {
