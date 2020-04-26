@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import P5Wrapper from 'react-p5-wrapper';
 
 import liveCorona from './../assets/live.png';
 import deadCorona from './../assets/dead.png';
 import spray from './../assets/spray.png';
 import water from './../assets/water.png';
-
-import P5Wrapper from 'react-p5-wrapper';
 
 interface IProps {
 }
@@ -29,11 +28,15 @@ export default class Game extends Component<IProps, IState> {
 
     sketch (p: any) {
 
-        let width = window.innerWidth - 40; let height = window.innerHeight-40;
+        let width = window.innerWidth-40; let height = window.innerHeight-80;
         let sprayImg; let waterImg; let liveImg; let deadImg;
         let runwater;
+        const imgWidth = (width/1560) * 50
+        const imgHeight = (height/745) * 100
         let virus = [] as any;
-        let virArr = [] as any
+        let virArr = [] as any;
+        let startKilling = false;
+        
 
         p.preload = function() {
             waterImg = p.loadImage(water);
@@ -44,78 +47,96 @@ export default class Game extends Component<IProps, IState> {
 
         p.setup = function() {
             p.createCanvas(width, height);
-            sprayImg.resize(50, 100);
-            waterImg.resize(50, 50);
-            liveImg.resize(50, 100);
-            deadImg.resize(50, 100);
+            let button = p.createButton("SPRAY");
+            button.mousePressed(killVirus);
+            startGame();
+        };
 
-            runwater = new WaterImage(100, 100, waterImg);
+        function startGame() {
+            sprayImg.resize(imgWidth, imgHeight);
+            waterImg.resize(imgWidth, imgWidth);
+            liveImg.resize(imgWidth, imgHeight);
+            deadImg.resize(imgWidth, imgHeight);
+
+            runwater = new WaterImage(imgWidth, imgWidth, waterImg);
             
             for (let i=1; i < 11; i++){
-                virus[i] = new VirusImage(width - (i*50), height-100, liveImg);
+                virus[i] = new VirusImage(width - (i*imgWidth), height-imgHeight);
             }
 
             for (let i=1; i < 11; i++){
                 virArr.push('alive')
             }
-        };
+        }
 
-        p.draw = function() {
-            p.background(0);
-            runwater.show()
-            runwater.move()
+        function killVirus() {
+            startKilling = true; 
+        }
 
-            for (let i=1; i < 11; i++){
-                virus[i].show();                
-                   
+        function resetVirus() {
+            for (let i=1; i < 11; i++){           
                 if (virus[i].isDead(runwater)){
                     virArr.splice(i, 1, 'dead')
                 }
 
                 if(virArr[i] === 'dead'){
+                    virus[i].render(deadImg);
                     virus[i].moveDown();
-                    p.fill(0,0,255)
                 } else {
+                    virus[i].render(liveImg);
                     virus[i].moveUp();
                 }
             }
+        }
+
+        p.draw = function() {
+            p.background(1000);
+            p.image(sprayImg, 0, imgWidth);
+
+            if (startKilling) {
+                runwater.render()
+                runwater.move()
+            }
+
+            resetVirus()
         };
 
-        class VirusImage { 
+        class VirusImage {
             private x: number;
             private y: number;
-            private img: any;
-            constructor(x: number, y: number, img: any) {
+            constructor(x: number, y: number) {
                 this.x = x; 
                 this.y = y;
-                this.img = img;
+            }
+
+            getSpeed() {
+                return ((2/745) * height);
             }
 
             moveUp() {
-                this.y = this.y - 2;
+                this.y = this.y - this.getSpeed();
                 if (this.y < -100) {
-                    this.y = -100;
+                    this.y = height;
                 }
             }
 
             moveDown() {
-                this.y = this.y + 2;
+                this.y = this.y + this.getSpeed();
                 if (this.y > height) {
                     this.y = height;
                 }
             }
 
-            show() {
-                p.image(this.img, this.x, this.y);
-                // p.rect(this.x, this.y, 50, 100);
+            render(img) {
+                p.image(img, this.x, this.y);
             }
 
             // Checks if the virus is dead or alive
             isDead(runwater) {
-                if(runwater.y > this.y+100 || this.y > runwater.y+50) {
+                if(runwater.y > this.y+imgHeight || this.y > runwater.y+imgWidth) {
                     return false
                 }
-                if(runwater.x > this.x+50 || this.x > runwater.x+50) {
+                if(runwater.x > this.x+imgWidth || this.x > runwater.x+imgWidth) {
                     return false
                 }
                 return true
@@ -132,16 +153,24 @@ export default class Game extends Component<IProps, IState> {
                 this.img = img;
             }
 
-            move() {
-                this.x = this.x + 4;
-                // if (this.x > width) {
-                //     this.x = 50;
-                // }
+            getSpeed() {
+                return ((4/1560)*width);
             }
 
-            show() {
+            move() {
+                this.x = this.x + this.getSpeed();
+                if (this.x > width) {
+                    startKilling = false
+                    this.x = imgWidth;
+                }
+            }
+
+            getLocation() {
+                return this.x
+            }
+
+            render() {
                 p.image(this.img, this.x, this.y);
-                // p.rect(this.x, this.y, 50, 50);
             }
         }
     };
@@ -149,6 +178,9 @@ export default class Game extends Component<IProps, IState> {
     render() {
         return (
             <div style={{ margin: 20 }}>
+                {/* <button onClick={killVirus()}>
+                    SPRAY
+                </button> */}
                 <P5Wrapper sketch={this.sketch} />
             </div>
         );
