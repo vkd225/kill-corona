@@ -5,14 +5,9 @@ import liveCorona from './../assets/live.png';
 import deadCorona from './../assets/dead.png';
 import spray from './../assets/spray.png';
 import water from './../assets/water.png';
+import { Button } from 'reactstrap';
 
-interface IProps {
-}
-
-interface IState {
-    virusR: any;
-    score: number;
-}
+import Score from './Score';
 
 let width = window.innerWidth-40; let height = window.innerHeight-100;
 let sprayImg; let waterImg; let liveImg; let deadImg;
@@ -23,25 +18,13 @@ let virus = [] as any;
 let virArr = [] as any;
 let startKilling = false;
 
-function resetVirus() {
-    for (let i=1; i < 11; i++){           
-        if (virus[i].isDead(runwater)){
-            virArr.splice(i, 1, 'dead')
-        }
-
-        if(virArr[i] === 'dead'){
-            virus[i].render(deadImg);
-            virus[i].moveDown();
-        } else {
-            virus[i].render(liveImg);
-            virus[i].moveUp();
-        }
-    }
+interface IProps {
 }
 
-function killVirus() {
-    startKilling = true;
-    return 'startKilling' 
+interface IState {
+    score1: number;
+    score2: number;
+    turnCount: number;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -50,18 +33,54 @@ export default class Game extends Component<IProps, IState> {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.sketch = this.sketch.bind(this);
         this.state = {
-            virusR: [],
-            score: 0
+            score1: 0,
+            score2: 0,
+            turnCount: 0
         }
     };
 
     async componentDidMount() {
-        let a = await killVirus()
+        let a = await this.killVirus()
         console.log(a)
     };
 
-    sketch (p: any) {
-        p.preload = function() {
+    resetVirus = () => {
+        for (let i=1; i < 11; i++){           
+            if (virus[i].isDead(runwater)){
+                virArr.splice(i, 1, 'dead')
+            }
+
+            if(virArr[i] === 'dead'){
+                virus[i].render(deadImg);
+                virus[i].moveDown();
+            } else {
+                virus[i].render(liveImg);
+                virus[i].moveUp();
+            }
+        }
+    }
+
+    killVirus = () => {
+        startKilling = true;
+        this.setState({
+            turnCount: this.state.turnCount + 1
+        });
+
+        console.log('Tunr', this.state.turnCount)
+    }
+
+    getDeadVirusCount = () => {
+        let deadVirusCount = 0
+        for (let i=0; i<virArr.length; i++ ){
+            if (virArr[i] === 'dead') {
+                deadVirusCount ++
+            }
+        }
+        return deadVirusCount
+    }
+
+    sketch = (p: any) => {
+        p.preload = () => {
             waterImg = p.loadImage(water);
             sprayImg = p.loadImage(spray)
             liveImg = p.loadImage(liveCorona);
@@ -88,19 +107,15 @@ export default class Game extends Component<IProps, IState> {
             }
         }
 
-        p.setup = function() {
+        p.setup = () => {
             p.createCanvas(width, height);
-            // let spray = p.createButton("SPRAY");
-            // spray.style('font-size', '25px');
-            // spray.mousePressed(killVirus);
-
             startGame();
             let reset = p.createButton("RESET");
             reset.style('font-size', '25px');
             reset.mousePressed(startGame);
         };
 
-        p.draw = function() {
+        p.draw = () => {
             p.background(1000);
             p.textSize(32);
             p.image(sprayImg, 0, imgWidth);
@@ -111,14 +126,13 @@ export default class Game extends Component<IProps, IState> {
             }
 
             if (runwater.getLocation() < width){
-                runwater.getDeadVirusCount()
+                // send scores to Score component
+                let deadCount = this.getDeadVirusCount()
+                this.setState({
+                    score1: deadCount,
+                })
             }
-
-            p.textSize(22);
-            p.text('YOUR SCORE: ', 0, height-10);
-            p.text(runwater.getDeadVirusCount(), 170, height-10);
-
-            resetVirus()
+            this.resetVirus()
         };
 
         class VirusImage {
@@ -180,23 +194,13 @@ export default class Game extends Component<IProps, IState> {
             move() {
                 this.x = this.x + this.getSpeed();
                 if (this.x > width) {
-                    startKilling = false
+                    startKilling = false;
                     this.x = imgWidth;
                 }
             }
         
             getLocation() {
                 return this.x
-            }
-        
-            getDeadVirusCount() {
-                let deadVirusCount = 0
-                for (let i=0; i<virArr.length; i++ ){
-                    if (virArr[i] === 'dead') {
-                        deadVirusCount ++
-                    }
-                }
-                return deadVirusCount
             }
         
             render() {
@@ -209,9 +213,8 @@ export default class Game extends Component<IProps, IState> {
         return (
             <div style={{ margin: 20 }}>
                 <P5Wrapper sketch={this.sketch} />
-                <button onClick={killVirus}>
-                    SPRAY
-                </button>
+                <Button color="secondary" onClick={this.killVirus}>SPRAY</Button>
+                <Score score ={this.state.score1} turn={this.state.turnCount}/>
             </div>
         );
     }
