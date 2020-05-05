@@ -7,6 +7,7 @@ interface IProps {
 }
 
 interface IState {
+    initScore: string;
 }
 
 export default class Score extends Component<IProps, IState> {
@@ -14,6 +15,7 @@ export default class Score extends Component<IProps, IState> {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.state = {
+            initScore: '-'
         }
     };
 
@@ -31,10 +33,45 @@ export default class Score extends Component<IProps, IState> {
                                 <Table>
                                     <tbody>
                                         <tr>
-                                            <td>{this.props.score}</td>
-                                            <td >13</td>
+                                            {(this.props.turn === 1 ) ?
+                                                <td>{this.props.score}</td>
+                                                :
+                                                <td>-</td>
+                                            }
+                                            {(this.props.turn === 2) ?
+                                                <td>{this.props.score}</td>
+                                                :
+                                                <td>-</td>
+                                            }
                                         </tr>
-                                        <tr style={{textAlign: 'right'}}>10</tr>
+                                        <tr style={{textAlign: 'right'}}>
+                                            <th style={{border: 'none'}}>
+                                                10
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                            </td>
+                            <td>
+                                <Table>
+                                    <tbody>
+                                    <tr>
+                                        {(this.props.turn === 3) ?
+                                            <td>{this.props.score}</td>
+                                            :
+                                            <td>-</td>
+                                        }
+                                        {(this.props.turn === 4) ?
+                                            <td>{this.props.score}</td>
+                                            :
+                                            <td>-</td>
+                                        }
+                                    </tr>
+                                    <tr style={{textAlign: 'right'}}>
+                                        <th style={{border: 'none'}}>
+                                            5
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </Table>
                             </td>
@@ -45,7 +82,11 @@ export default class Score extends Component<IProps, IState> {
                                         <td>2</td>
                                         <td>3</td>
                                     </tr>
-                                    <tr style={{textAlign: 'right'}}>5</tr>
+                                    <tr style={{textAlign: 'right'}}>
+                                        <th style={{border: 'none'}}>
+                                            5
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </Table>
                             </td>
@@ -56,7 +97,11 @@ export default class Score extends Component<IProps, IState> {
                                         <td>2</td>
                                         <td>3</td>
                                     </tr>
-                                    <tr style={{textAlign: 'right'}}>5</tr>
+                                    <tr style={{textAlign: 'right'}}>
+                                        <th style={{border: 'none'}}>
+                                            5
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </Table>
                             </td>
@@ -67,18 +112,11 @@ export default class Score extends Component<IProps, IState> {
                                         <td>2</td>
                                         <td>3</td>
                                     </tr>
-                                    <tr style={{textAlign: 'right'}}>5</tr>
-                                    </tbody>
-                                </Table>
-                            </td>
-                            <td>
-                                <Table>
-                                    <tbody>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>3</td>
+                                    <tr style={{textAlign: 'right'}}>
+                                        <th style={{border: 'none'}}>
+                                            5
+                                        </th>
                                     </tr>
-                                    <tr style={{textAlign: 'right'}}>5</tr>
                                     </tbody>
                                 </Table>
                             </td>
@@ -90,7 +128,11 @@ export default class Score extends Component<IProps, IState> {
                                             Total Score
                                         </th>
                                     </tr>
-                                    <tr>25</tr>
+                                    <tr> 
+                                        <th style={{border: 'none'}}>
+                                            25
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </Table>
                             </td>

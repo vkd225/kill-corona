@@ -22,9 +22,8 @@ interface IProps {
 }
 
 interface IState {
-    score1: number;
-    score2: number;
     turnCount: number;
+    scores: any;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -33,15 +32,12 @@ export default class Game extends Component<IProps, IState> {
         this.componentDidMount = this.componentDidMount.bind(this);
         this.sketch = this.sketch.bind(this);
         this.state = {
-            score1: 0,
-            score2: 0,
-            turnCount: 0
+            turnCount: 0,
+            scores: []
         }
     };
 
     async componentDidMount() {
-        let a = await this.killVirus()
-        console.log(a)
     };
 
     resetVirus = () => {
@@ -62,11 +58,6 @@ export default class Game extends Component<IProps, IState> {
 
     killVirus = () => {
         startKilling = true;
-        this.setState({
-            turnCount: this.state.turnCount + 1
-        });
-
-        console.log('Tunr', this.state.turnCount)
     }
 
     getDeadVirusCount = () => {
@@ -77,6 +68,17 @@ export default class Game extends Component<IProps, IState> {
             }
         }
         return deadVirusCount
+    }
+
+    setDeadVirusCount() {
+        // send scores to Score component
+        let deadCount = this.getDeadVirusCount()
+        this.setState({ 
+            scores: [...this.state.scores, deadCount],
+            turnCount: this.state.turnCount + 1
+        })
+        console.log('Tunr: ', this.state.turnCount)
+        console.log('sores: ', this.state.scores)
     }
 
     sketch = (p: any) => {
@@ -125,13 +127,10 @@ export default class Game extends Component<IProps, IState> {
                 runwater.move()
             }
 
-            if (runwater.getLocation() < width){
-                // send scores to Score component
-                let deadCount = this.getDeadVirusCount()
-                this.setState({
-                    score1: deadCount,
-                })
+            if (runwater.getLocation() >= width){
+                this.setDeadVirusCount()
             }
+
             this.resetVirus()
         };
 
@@ -193,7 +192,7 @@ export default class Game extends Component<IProps, IState> {
         
             move() {
                 this.x = this.x + this.getSpeed();
-                if (this.x > width) {
+                if (this.x > width + this.getSpeed()) {
                     startKilling = false;
                     this.x = imgWidth;
                 }
@@ -201,7 +200,7 @@ export default class Game extends Component<IProps, IState> {
         
             getLocation() {
                 return this.x
-            }
+            }            
         
             render() {
                 p.image(this.img, this.x, this.y);
@@ -214,7 +213,7 @@ export default class Game extends Component<IProps, IState> {
             <div style={{ margin: 20 }}>
                 <P5Wrapper sketch={this.sketch} />
                 <Button color="secondary" onClick={this.killVirus}>SPRAY</Button>
-                <Score score ={this.state.score1} turn={this.state.turnCount}/>
+                <Score score ={245} turn={this.state.turnCount}/>
             </div>
         );
     }
