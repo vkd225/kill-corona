@@ -40,7 +40,7 @@ export default class Game extends Component<IProps, IState> {
     async componentDidMount() {
     };
 
-    resetVirus = () => {
+    moveVirus = () => {
         for (let i=1; i < 11; i++){           
             if (virus[i].isDead(runwater)){
                 virArr.splice(i, 1, 'dead')
@@ -72,13 +72,36 @@ export default class Game extends Component<IProps, IState> {
 
     setDeadVirusCount() {
         // send scores to Score component
-        let deadCount = this.getDeadVirusCount()
+        let score1 = this.getDeadVirusCount()
         this.setState({ 
-            scores: [...this.state.scores, deadCount],
             turnCount: this.state.turnCount + 1
         })
+
+        if (this.state.turnCount % 2 === 1){
+            this.setState({ 
+                scores: [...this.state.scores, score1],
+            })
+        } else if (this.state.turnCount % 2 === 0){
+            let score2 = score1 - this.state.scores.slice(-1)[0]
+
+            this.setState({ 
+                scores: [...this.state.scores, score2],
+            })
+
+            // this.resetVirus()
+        }
+
         console.log('Tunr: ', this.state.turnCount)
         console.log('sores: ', this.state.scores)
+    }
+
+    resetVirus = () => {
+        virArr.length = 0;
+        startKilling = false; 
+    
+        for (let i=1; i < 11; i++){
+            virArr.push('alive')
+        }
     }
 
     sketch = (p: any) => {
@@ -100,7 +123,7 @@ export default class Game extends Component<IProps, IState> {
             for (let i=1; i < 11; i++){
                 virus[i] = new VirusImage(width - (i*imgWidth), height-imgHeight);
             }
-        
+
             virArr.length = 0;
             startKilling = false; 
         
@@ -131,7 +154,7 @@ export default class Game extends Component<IProps, IState> {
                 this.setDeadVirusCount()
             }
 
-            this.resetVirus()
+            this.moveVirus()
         };
 
         class VirusImage {
