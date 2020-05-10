@@ -15,8 +15,9 @@ code {
 body {
   margin: 0;
   padding: 0;
-  background-color: #000000;
-  color: #FFFFFF
+  background-color: #ffffff;
+  color: #FFFFFF;
+  font-family: Verdana;
 }
 
 html {
