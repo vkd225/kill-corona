@@ -8,22 +8,26 @@ import water from './../assets/water.png';
 import { Button } from 'reactstrap';
 
 import Score from './Score';
+import GameOver from './Gameover';
 
-let width = window.innerWidth-40; let height = window.innerHeight-100;
+let width = window.innerWidth-40; let height = window.innerHeight-80;
 let sprayImg; let waterImg; let liveImg; let deadImg;
 let runwater;
 const imgWidth = (width/1560) * 50
 const imgHeight = (height/745) * 100
 let virus = [] as any;
 let virArr = [] as any;
-let startKilling = false;
+let startKilling = false; let resetVirus = false;
 
 interface IProps {
+    name: string;
 }
 
 interface IState {
     turnCount: number;
     scores: any;
+    totalScore: number;
+    gameOver: boolean;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -33,7 +37,9 @@ export default class Game extends Component<IProps, IState> {
         this.sketch = this.sketch.bind(this);
         this.state = {
             turnCount: 0,
-            scores: []
+            scores: ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+            totalScore: 0,
+            gameOver: false
         }
     };
 
@@ -70,7 +76,7 @@ export default class Game extends Component<IProps, IState> {
         return deadVirusCount
     }
 
-    setDeadVirusCount() {
+    setDeadVirusCountScores() {
         // send scores to Score component
         let score1 = this.getDeadVirusCount()
         this.setState({ 
@@ -78,29 +84,28 @@ export default class Game extends Component<IProps, IState> {
         })
 
         if (this.state.turnCount % 2 === 1){
+            let newScores = this.state.scores.slice()
+            newScores[this.state.turnCount - 1] = score1
             this.setState({ 
-                scores: [...this.state.scores, score1],
+                scores: newScores,
+                totalScore: this.state.totalScore + score1
             })
         } else if (this.state.turnCount % 2 === 0){
-            let score2 = score1 - this.state.scores.slice(-1)[0]
+            let score2 = score1 - this.state.scores[this.state.turnCount-2]
+            let newScores = this.state.scores.slice()
+            newScores[this.state.turnCount - 1] = score2
 
             this.setState({ 
-                scores: [...this.state.scores, score2],
+                scores: newScores,
+                totalScore: this.state.totalScore + score2
             })
-
-            // this.resetVirus()
+            resetVirus = true
         }
 
-        console.log('Tunr: ', this.state.turnCount)
-        console.log('sores: ', this.state.scores)
-    }
-
-    resetVirus = () => {
-        virArr.length = 0;
-        startKilling = false; 
-    
-        for (let i=1; i < 11; i++){
-            virArr.push('alive')
+        if (this.state.turnCount === 10){
+            this.setState({
+                gameOver: true
+            })
         }
     }
 
@@ -135,9 +140,6 @@ export default class Game extends Component<IProps, IState> {
         p.setup = () => {
             p.createCanvas(width, height);
             startGame();
-            let reset = p.createButton("RESET");
-            reset.style('font-size', '25px');
-            reset.mousePressed(startGame);
         };
 
         p.draw = () => {
@@ -151,7 +153,12 @@ export default class Game extends Component<IProps, IState> {
             }
 
             if (runwater.getLocation() >= width){
-                this.setDeadVirusCount()
+                this.setDeadVirusCountScores()
+            }
+
+            if (resetVirus) {
+                startGame()
+                resetVirus = false
             }
 
             this.moveVirus()
@@ -233,11 +240,26 @@ export default class Game extends Component<IProps, IState> {
 
     render() {
         return (
-            <div style={{ margin: 20 }}>
-                <P5Wrapper sketch={this.sketch} />
-                <Button color="secondary" onClick={this.killVirus}>SPRAY</Button>
-                <Score score ={245} turn={this.state.turnCount}/>
+            <div>
+                {
+                    (this.state.gameOver) ?
+                        <GameOver totalScore={this.state.totalScore}/>
+                    :
+                    <div style={{ margin: 20, textAlign: "center" }}>
+                        <P5Wrapper sketch={this.sketch} />
+                        <Button size="lg" color="secondary" onClick={this.killVirus}>
+                            SPRAY
+                        </Button>
+                        <Score 
+                            score ={this.state.scores} 
+                            turn={this.state.turnCount}
+                            totalScore={this.state.totalScore}
+                            name={this.props.name}
+                        />
+                    </div>
+                }
             </div>
+            
         );
     }
 }
