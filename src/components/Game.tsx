@@ -10,7 +10,7 @@ import { Button } from 'reactstrap';
 import Score from './Score';
 import GameOver from './Gameover';
 
-let width = window.innerWidth-40; let height = window.innerHeight-80;
+let width = window.innerWidth-40; let height = window.innerHeight-170;
 let sprayImg; let waterImg; let liveImg; let deadImg;
 let runwater;
 const imgWidth = (width/1560) * 50
@@ -91,14 +91,27 @@ export default class Game extends Component<IProps, IState> {
                 totalScore: this.state.totalScore + score1
             })
         } else if (this.state.turnCount % 2 === 0){
-            let score2 = score1 - this.state.scores[this.state.turnCount-2]
-            let newScores = this.state.scores.slice()
-            newScores[this.state.turnCount - 1] = score2
 
-            this.setState({ 
-                scores: newScores,
-                totalScore: this.state.totalScore + score2
-            })
+            if (score1 === 10) {
+                let score2 = score1 - this.state.scores[this.state.turnCount-2]
+                score2 = 2 * score2
+                let newScores = this.state.scores.slice()
+                newScores[this.state.turnCount - 1] = score2
+                this.setState({ 
+                    scores: newScores,
+                    totalScore: this.state.totalScore + score2
+                })
+            } else {
+                let score2 = score1 - this.state.scores[this.state.turnCount-2]
+                let newScores = this.state.scores.slice()
+                newScores[this.state.turnCount - 1] = score2
+                this.setState({ 
+                    scores: newScores,
+                    totalScore: this.state.totalScore + score2
+                })
+            }
+
+           
             resetVirus = true
         }
 
