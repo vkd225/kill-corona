@@ -15,9 +15,12 @@ code {
 body {
   margin: 0;
   padding: 0;
-  background-color: #ffffff;
+  background-color: whitesmoke;
   color: #000000;
   font-family: Verdana;
+  /* background-image: url('./assets/virus-background.png'); */
+  background-repeat:no-repeat;
+  background-size: 100% 100%;
 }
 
 html {

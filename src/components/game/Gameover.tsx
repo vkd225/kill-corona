@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import Home from './Home';
+import StartGame from './StartGame';
 
 interface IProps {
     totalScore: number;
@@ -29,7 +29,7 @@ export default class Gameover extends Component<IProps, IState> {
         return (
             <div>
                 {(this.state.restart)?
-                    <Home />
+                    <StartGame />
                 :
                 <div style={{ textAlign: 'center', marginTop: '20%' }}>
                     <h2>GAME OVER</h2>

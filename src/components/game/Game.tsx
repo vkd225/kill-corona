@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
 
-import liveCorona from './../assets/live.png';
-import deadCorona from './../assets/dead.png';
-import spray from './../assets/spray.png';
-import water from './../assets/water.png';
+import liveCorona from './../../assets/live.png';
+import deadCorona from './../../assets/dead.png';
+import spray from './../../assets/spray.png';
+import water from './../../assets/water.png';
 import { Button } from 'reactstrap';
 
 import Score from './Score';
