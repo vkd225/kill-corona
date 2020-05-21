@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import * as HttpStatus from 'http-status-codes';
 import { Table } from 'reactstrap';
 import { Container, Row, Col } from 'reactstrap';
+import { ApiService }  from './../../services/ApiService';
 
 interface IProps {
 }
@@ -12,9 +12,11 @@ interface IState {
 }
 
 export default class LeaderBoard extends Component<IProps, IState> {
+    private apiService: ApiService;
 
     constructor(props: IProps) {
         super(props);
+        this.apiService = new ApiService({functions: {}});
         this.componentDidMount = this.componentDidMount.bind(this);
         this.state = {
             rankings: [] as any,
@@ -23,31 +25,11 @@ export default class LeaderBoard extends Component<IProps, IState> {
     }
 
     async componentDidMount() {
-        let url = 'https://ve7erna0rb.execute-api.us-east-1.amazonaws.com/prod/ranks?request=get_ranks'
-        let data = await this.getData (url)
-
-        // console.log(data)
+        let data = await this.apiService.getranks()
         this.setState({
             rankings: data.ranks,
             gamesPlayed: data.gamesPlayed
         })
-    }
-
-    async getData (url) {
-        try {
-          let result = await fetch(url, {
-            method: 'GET',
-          });
-
-          // Bail if status code is not OK
-          if ((result.status).toString() !== (HttpStatus.OK).toString()) return undefined;
-
-          // Read response
-          let response = await result.json();
-          return response;
-        } catch (error) {
-          return undefined;
-        }
     }
 
     render() {

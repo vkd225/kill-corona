@@ -274,7 +274,7 @@ export default class Game extends Component<IProps, IState> {
             <div>
                 {
                     (this.state.gameOver) ?
-                        <GameOver totalScore={this.state.totalScore}/>
+                        <GameOver totalScore={this.state.totalScore} username={this.props.name}/>
                     :
                     <div style={{ margin: 20, textAlign: "center" }}>
                         <P5Wrapper sketch={this.sketch} />

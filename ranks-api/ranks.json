@@ -1,105 +1,105 @@
 {
     "ranks": [
         {
-            "username": "name2", 
-            "score": 89, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 1
         }, 
         {
-            "username": "a", 
-            "score": 70, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 2
         }, 
         {
-            "username": "name1", 
-            "score": 68, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 3
         }, 
         {
-            "username": "name1", 
-            "score": 68, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 4
         }, 
         {
-            "username": "b", 
-            "score": 68, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 5
         }, 
         {
-            "username": "c", 
-            "score": 67, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 6
         }, 
         {
-            "username": "d", 
-            "score": 66, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 7
         }, 
         {
-            "username": "e", 
-            "score": 65, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 8
         }, 
         {
-            "username": "f", 
-            "score": 64, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 9
         }, 
         {
-            "username": "g", 
-            "score": 63, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 10
         }, 
         {
-            "username": "h", 
-            "score": 62, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 11
         }, 
         {
-            "username": "i", 
-            "score": 61, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 12
         }, 
         {
-            "username": "j", 
-            "score": 60, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 13
         }, 
         {
-            "username": "k", 
-            "score": 59, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 14
         }, 
         {
-            "username": "l", 
-            "score": 58, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 15
         }, 
         {
-            "username": "m", 
-            "score": 57, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 16
         }, 
         {
-            "username": "n", 
-            "score": 56, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 17
         }, 
         {
-            "username": "o", 
-            "score": 55, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 18
         }, 
         {
-            "username": "p", 
-            "score": 54, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 19
         }, 
         {
-            "username": "q", 
-            "score": 53, 
+            "username": "N/A", 
+            "score": 0, 
             "rank": 20
         }
     ], 
-    "gamesPlayed": 33
+    "gamesPlayed": 0
 }

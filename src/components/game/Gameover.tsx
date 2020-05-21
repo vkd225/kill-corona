@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import StartGame from './StartGame';
+import { ApiService }  from './../../services/ApiService';
+
 
 interface IProps {
     totalScore: number;
+    username: string;
 }
 
 interface IState {
@@ -11,13 +14,21 @@ interface IState {
 }
 
 export default class Gameover extends Component<IProps, IState> {
+    private apiService: ApiService;
+
     constructor (props: IProps) {
         super(props);
+        this.apiService = new ApiService({functions: {}});
         this.restartGame = this.restartGame.bind(this);
         this.state = {
             restart: false
         }
     };
+
+    async componentDidMount() {
+        let score = await this.apiService.postScore(this.props.username, this.props.totalScore)
+        console.log(score)
+    }
 
     restartGame() {
         this.setState({
