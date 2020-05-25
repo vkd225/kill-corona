@@ -174,7 +174,7 @@ export default class Game extends Component<IProps, IState> {
         };
 
         p.draw = () => {
-            p.background(1000);
+            p.background('rgb(245,245,245)');
             p.textSize(32);
             p.image(sprayImg, 0, imgWidth);
 
