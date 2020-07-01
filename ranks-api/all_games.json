@@ -1,105 +1,76 @@
 {
-    "ranks": [
+    "games": [
         {
-            "rank": 1,
             "username": "v",
             "score": 84
         },
         {
-            "rank": 2,
             "username": "Enter your name",
             "score": 82
         },
         {
-            "rank": 3,
             "username": "Anyone above me is a cheater",
             "score": 78
         },
         {
-            "rank": 4,
             "username": "Suck that Vik",
             "score": 77
         },
         {
-            "rank": 5,
             "username": "Beat Vik",
             "score": 77
         },
         {
-            "rank": 6,
             "username": "boombaby",
             "score": 66
         },
         {
-            "rank": 7,
             "username": "boombaby",
             "score": 63
         },
         {
-            "rank": 8,
             "username": "v",
             "score": 60
         },
         {
-            "rank": 9,
             "username": "vkk",
             "score": 51
         },
         {
-            "rank": 10,
             "username": "Phone",
             "score": 49
         },
         {
-            "rank": 11,
             "username": "Lord Voldemort",
             "score": 48
         },
         {
-            "rank": 12,
             "username": "Bazz",
             "score": 47
         },
         {
-            "rank": 13,
             "username": "hhh",
             "score": 45
         },
         {
-            "rank": 14,
             "username": "Boombaby",
             "score": 41
         },
         {
-            "rank": 15,
             "username": "corona",
             "score": 39
         },
         {
-            "rank": 16,
             "username": "Vikal K Gupta",
             "score": 36
         },
         {
-            "rank": 17,
             "username": "test player",
             "score": 34
         },
         {
-            "rank": 18,
             "username": "PETER NOH",
             "score": 31
-        },
-        {
-            "rank": 19,
-            "username": "N/A",
-            "score": 0
-        },
-        {
-            "rank": 20,
-            "username": "N/A",
-            "score": 0
         }
-    ],
-    "gamesPlayed": 20
+    ]
 }
