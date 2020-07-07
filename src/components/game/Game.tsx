@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
+import { Row, Col, Button } from 'reactstrap';
 
 import liveCorona from './../../assets/live.png';
 import deadCorona from './../../assets/dead.png';
 import spray from './../../assets/spray.png';
 import water from './../../assets/water.png';
-import { Button } from 'reactstrap';
 
 import Score from './Score';
 import GameOver from './Gameover';
+import SprayGauge from './SprayGauge';
 
 let width = window.innerWidth-40; let height = window.innerHeight-170;
 let sprayImg; let waterImg; let liveImg; let deadImg;
@@ -82,13 +83,7 @@ export default class Game extends Component<IProps, IState> {
         }
         return deadVirusCount
     }
-
-    // Do this if you hit a strike
-    ifStrike = () => {
-
-
-    }
-
+    
     async checkStrikeSpare (score: number) {
         if (score === 10) {
             // this.setState({ spare: true })
@@ -309,12 +304,19 @@ export default class Game extends Component<IProps, IState> {
                         <Button size="lg" color="secondary" onClick={this.killVirus}>
                             SPRAY
                         </Button>
-                        <Score 
-                            score ={this.state.scores} 
-                            turn={this.state.turnCount}
-                            totalScore={this.state.totalScore}
-                            name={this.props.name}
-                        />
+                        <Row>
+                            <Col xs="1" sm="1" md="1"> 
+                                <SprayGauge />
+                            </Col>
+                            <Col>
+                                <Score 
+                                score ={this.state.scores} 
+                                turn={this.state.turnCount}
+                                totalScore={this.state.totalScore}
+                                name={this.props.name}
+                                />
+                            </Col>
+                        </Row>
                     </div>
                 }
             </div>

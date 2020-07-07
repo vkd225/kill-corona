@@ -3,7 +3,6 @@ import { Button } from 'reactstrap';
 import StartGame from './StartGame';
 import { ApiService }  from './../../services/ApiService';
 
-
 interface IProps {
     totalScore: number;
     username: string;
