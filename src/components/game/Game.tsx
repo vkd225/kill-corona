@@ -30,6 +30,7 @@ interface IState {
     gameOver: boolean;
     spare: boolean;
     strike: boolean;
+    prevStrike: boolean;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -37,13 +38,15 @@ export default class Game extends Component<IProps, IState> {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.sketch = this.sketch.bind(this);
+        this.checkStrikeSpare = this.checkStrikeSpare.bind(this);
         this.state = {
             turnCount: 0,
             scores: ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
             totalScore: 0,
             gameOver: false,
             spare: false,
-            strike: false
+            strike: false,
+            prevStrike: false
         }
     };
 
@@ -80,57 +83,82 @@ export default class Game extends Component<IProps, IState> {
         return deadVirusCount
     }
 
-    setDeadVirusCountScores() {
+    // Do this if you hit a strike
+    ifStrike = () => {
+
+
+    }
+
+    async checkStrikeSpare (score: number) {
+        if (score === 10) {
+            // this.setState({ spare: true })
+            return true
+        } else {
+            // this.setState({ spare: false })
+            return false
+        }
+
+    } 
+
+    async setDeadVirusCountScores() {
         // send scores to Score component
         let deadVirusCount = this.getDeadVirusCount()
         this.setState({ 
             turnCount: this.state.turnCount + 1
         })
 
-        if (this.state.turnCount % 2 === 1){
+        if (this.state.turnCount % 2 === 1) {
             let newScores = this.state.scores.slice()
-            if(this.state.spare){
+            if (this.state.strike) {
+                newScores[this.state.turnCount - 1] = 2 * deadVirusCount
+                this.setState({ prevStrike: true})
+            } else if(this.state.spare) {
                 newScores[this.state.turnCount - 1] = 2 * deadVirusCount
 
             } else {
                 newScores[this.state.turnCount - 1] = deadVirusCount
             }
 
+            // check if strike or not
+            let strikeSpare = await this.checkStrikeSpare (deadVirusCount)
             this.setState({ 
                 scores: newScores,
-                totalScore: this.state.totalScore + newScores[this.state.turnCount - 1]
+                totalScore: this.state.totalScore + newScores[this.state.turnCount - 1],
+                strike: strikeSpare
             })
 
+            if (this.state.strike) {
+                resetVirus = true
+                await this.setState({ 
+                    turnCount: this.state.turnCount + 1,
+                    spare: false
+                })
+                newScores[this.state.turnCount - 1] = 0
+            }
         } else if (this.state.turnCount % 2 === 0){
             let newScores = this.state.scores.slice()
 
-            if(this.state.spare) {
+            if (this.state.prevStrike) {
+                newScores[this.state.turnCount - 1] = 2 * (deadVirusCount - (this.state.scores[this.state.turnCount-2]/2))
+
+            } else if (this.state.spare) {
                 newScores[this.state.turnCount - 1] = deadVirusCount - (this.state.scores[this.state.turnCount-2]/2)
 
-                // check if spare or not
-                if (((newScores[this.state.turnCount - 2]/2)  + newScores[this.state.turnCount - 1]) === 10){
-                    this.setState({ spare: true })
-                } else {
-                    this.setState({ spare: false })
-                }
             } else {
                 newScores[this.state.turnCount - 1] = deadVirusCount - this.state.scores[this.state.turnCount-2]
-
-                // check if spare or not
-                if (((newScores[this.state.turnCount - 2])  + newScores[this.state.turnCount - 1]) === 10){
-                    this.setState({ spare: true })
-                } else {
-                    this.setState({ spare: false })
-                }
             }
+
+            // check if spare or not
+            let strikeSpare = await this.checkStrikeSpare (deadVirusCount)
             
             this.setState({ 
                 scores: newScores,
-                totalScore: this.state.totalScore + newScores[this.state.turnCount - 1]
+                totalScore: this.state.totalScore + newScores[this.state.turnCount - 1],
+                strike: false,
+                prevStrike: false,
+                spare: strikeSpare
             })
-            resetVirus = true
-
-            
+            resetVirus = true            
         }
 
         if (this.state.turnCount === 10){
@@ -248,7 +276,7 @@ export default class Game extends Component<IProps, IState> {
             }
         
             getSpeed() {
-                return ((4/1560)*width);
+                return ((8/1560)*width);
             }
         
             move() {
