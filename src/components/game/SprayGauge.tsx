@@ -3,64 +3,24 @@ import { interpolateRgb } from 'd3-interpolate';
 import { color } from 'd3-color';
 import LiquidFillGauge from 'react-liquid-gauge';
 
-import SprayContext from '../../context/SprayContext';
-
 interface IProps {
+    sprayValue: number;
 }
 
 interface IState {
-    sprayValue: number;
-    mousedown: boolean;
 }
 
 export default class SprayGauge extends Component<IProps, IState> {
-    static contextType = SprayContext;
     constructor (props: IProps) {
         super(props);
         this.state = {
-            sprayValue: 0,
-            mousedown: false
         }
     };
 
     componentDidMount = () => {
-        // const sprayValue = this.context
-        // console.log(sprayValue) // {sprayValue: 0}
     }
 
-    setSpary = () => {
-        if (this.state.mousedown) {
-            if (this.state.sprayValue < 100){
-                this.setState({ sprayValue: this.state.sprayValue + 1},
-                    () => { window.requestAnimationFrame(this.setSpary) }
-                )
-            }
-        }
-    }
 
-    spraying = () => {
-        window.requestAnimationFrame(this.setSpary);
-    }
-
-    toggleMouseDown = () => {
-        this.setState({
-            mousedown: !this.state.mousedown
-        });
-        this.spraying()
-    }
-
-    toggleMouseUp = () => {
-        const { data, setData } = this.context
-        let newData = {sprayValue: this.state.sprayValue}
-        setData(newData)
-
-        // const sprayValue = this.context
-        // console.log('coming from sprayGauge', this.state.sprayValue) // {sprayValue: 0}
-        this.setState({
-            mousedown: !this.state.mousedown,
-            sprayValue: 0
-        });
-    }
 
     startColor = '#6495ed'; // cornflowerblue
     endColor = '#6495ed'; // cornflowerblue
@@ -68,18 +28,14 @@ export default class SprayGauge extends Component<IProps, IState> {
     render() {
         const radius = 50;
         const interpolate = interpolateRgb(this.startColor, this.endColor);
-        const fillColor = interpolate(this.state.sprayValue / 100);
+        const fillColor = interpolate(this.props.sprayValue / 100);
         return (
             <div>
-                <button
-                    onMouseDown={this.toggleMouseDown} onMouseUp={this.toggleMouseUp}
-                    style = {{ border: 'None' }}
-                >
-                    <LiquidFillGauge
+                <LiquidFillGauge
                         style={{ margin: '0 auto' }}
                         width={radius * 2}
                         height={radius * 2}
-                        value={this.state.sprayValue}
+                        value={this.props.sprayValue}
                         percent="%"
                         textSize={0.8}
                         textOffsetX={0}
@@ -121,8 +77,7 @@ export default class SprayGauge extends Component<IProps, IState> {
                             fill: color('#fff').toString(),
                             fontFamily: 'Arial'
                         }}
-                    />
-                </button>
+                />
             </div>
         );
     }

@@ -11,9 +11,7 @@ import Score from './Score';
 import GameOver from './Gameover';
 import SprayGauge from './SprayGauge';
 
-import SprayContext from '../../context/SprayContext';
-
-let width = window.innerWidth-40; let height = window.innerHeight-170;
+let width = window.innerWidth-15; let height = window.innerHeight-150;
 let sprayImg; let waterImg; let liveImg; let deadImg;
 let runwater;
 const imgWidth = (width/1560) * 50
@@ -34,12 +32,11 @@ interface IState {
     spare: boolean;
     strike: boolean;
     prevStrike: boolean;
-    profile: any;
+    mousedown: boolean;
+    sprayValue: number;
 }
 
 export default class Game extends Component<IProps, IState> {
-    static contextType = SprayContext;
-
     constructor (props: IProps) {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -53,14 +50,46 @@ export default class Game extends Component<IProps, IState> {
             spare: false,
             strike: false,
             prevStrike: false,
-            profile: {}
+            mousedown: false,
+            sprayValue: 0
         }
     };
 
     async componentDidMount() {
-        // const sprayValue = this.context
-        // console.log('coming from game', sprayValue) // {sprayValue: 0}
     };
+
+    setSpary = () => {
+        if (this.state.mousedown) {
+            if (this.state.sprayValue < 100){
+                this.setState({ sprayValue: this.state.sprayValue + 1},
+                    () => { window.requestAnimationFrame(this.setSpary) }
+                )
+            }
+        }
+    }
+
+    spraying = () => {
+        window.requestAnimationFrame(this.setSpary);
+    }
+
+    toggleMouseDown = () => {
+        this.setState({
+            mousedown: !this.state.mousedown
+        });
+        this.spraying()
+    }
+
+    toggleMouseUp = async () => {
+        await this.killVirus()
+        this.setState({
+            mousedown: !this.state.mousedown,
+            sprayValue: 0
+        });
+    }
+
+    killVirus = async () => {
+        startKilling = true;
+    }
 
     moveVirus = () => {
         for (let i=1; i < 11; i++){           
@@ -76,10 +105,6 @@ export default class Game extends Component<IProps, IState> {
                 virus[i].moveUp();
             }
         }
-    }
-
-    killVirus = () => {
-        startKilling = true;
     }
 
     getDeadVirusCount = () => {
@@ -98,7 +123,7 @@ export default class Game extends Component<IProps, IState> {
         } else {
             return false
         }
-    } 
+    }
 
     async setDeadVirusCountScores() {
         // send scores to Score component
@@ -304,14 +329,21 @@ export default class Game extends Component<IProps, IState> {
                     (this.state.gameOver) ?
                         <GameOver totalScore={this.state.totalScore} username={this.props.name}/>
                     :
-                    <div style={{ margin: 20, textAlign: "center" }}>
-                        <P5Wrapper sketch={this.sketch} />
-                        <Button size="lg" color="secondary" onClick={this.killVirus}>
-                            SPRAY
-                        </Button>
+                    <div style={{ margin: 20, marginTop: 5, textAlign: "center" }}>
                         <Row>
-                            <Col xs="1" sm="1" md="1"> 
-                                <SprayGauge />
+                            <P5Wrapper sketch={this.sketch} />
+                        </Row>
+                        {/* <Button size="lg" color="secondary" onClick={this.killVirus}>
+                            SPRAY
+                        </Button> */}
+                        <Row style={{ paddingTop: 10}}>
+                            <Col xs="1" sm="1" md="1">
+                                <button
+                                    onMouseDown={this.toggleMouseDown} onMouseUp={this.toggleMouseUp}
+                                    style = {{ border: 'None' }}
+                                >
+                                    <SprayGauge sprayValue={this.state.sprayValue} />
+                                </button>
                             </Col>
                             <Col>
                                 <Score 
