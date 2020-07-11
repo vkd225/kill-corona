@@ -20,8 +20,6 @@ export default class SprayGauge extends Component<IProps, IState> {
     componentDidMount = () => {
     }
 
-
-
     startColor = '#6495ed'; // cornflowerblue
     endColor = '#6495ed'; // cornflowerblue
 
@@ -53,7 +51,7 @@ export default class SprayGauge extends Component<IProps, IState> {
 
                             return (
                                     <tspan>
-                                        <tspan className="value" style={valueStyle}>{value}</tspan>
+                                        <tspan className="value" style={valueStyle}>SPRAY</tspan>
                                         <tspan style={percentStyle}>{props.percent}</tspan>
                                     </tspan>
                             );

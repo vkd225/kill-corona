@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 
 import liveCorona from './../../assets/live.png';
 import deadCorona from './../../assets/dead.png';
@@ -13,7 +13,8 @@ import SprayGauge from './SprayGauge';
 
 let width = window.innerWidth-15; let height = window.innerHeight-150;
 let sprayImg; let waterImg; let liveImg; let deadImg;
-let runwater;
+let runwater; 
+let spraySpeed = 0;
 const imgWidth = (width/1560) * 50
 const imgHeight = (height/745) * 100
 let virus = [] as any;
@@ -73,18 +74,26 @@ export default class Game extends Component<IProps, IState> {
     }
 
     toggleMouseDown = () => {
-        this.setState({
-            mousedown: !this.state.mousedown
-        });
-        this.spraying()
+        if(!startKilling){
+            this.setState({
+                mousedown: !this.state.mousedown
+            });
+            this.spraying()
+        }
     }
 
     toggleMouseUp = async () => {
+        await this.calculateSpraySpeed()
         await this.killVirus()
         this.setState({
             mousedown: !this.state.mousedown,
             sprayValue: 0
         });
+    }
+
+    calculateSpraySpeed = async () => {
+        spraySpeed = 0.1 * this.state.sprayValue + 3
+        return spraySpeed 
     }
 
     killVirus = async () => {
@@ -301,7 +310,9 @@ export default class Game extends Component<IProps, IState> {
             }
         
             getSpeed() {
-                return ((8/1560)*width);
+                // return speed of spray
+                // return ((8/1560)*width);
+                return spraySpeed
             }
         
             move() {
