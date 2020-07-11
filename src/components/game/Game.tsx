@@ -11,6 +11,8 @@ import Score from './Score';
 import GameOver from './Gameover';
 import SprayGauge from './SprayGauge';
 
+import SprayContext from '../../context/SprayContext';
+
 let width = window.innerWidth-40; let height = window.innerHeight-170;
 let sprayImg; let waterImg; let liveImg; let deadImg;
 let runwater;
@@ -32,9 +34,12 @@ interface IState {
     spare: boolean;
     strike: boolean;
     prevStrike: boolean;
+    profile: any;
 }
 
 export default class Game extends Component<IProps, IState> {
+    static contextType = SprayContext;
+
     constructor (props: IProps) {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
@@ -47,11 +52,14 @@ export default class Game extends Component<IProps, IState> {
             gameOver: false,
             spare: false,
             strike: false,
-            prevStrike: false
+            prevStrike: false,
+            profile: {}
         }
     };
 
     async componentDidMount() {
+        // const sprayValue = this.context
+        // console.log('coming from game', sprayValue) // {sprayValue: 0}
     };
 
     moveVirus = () => {
@@ -86,13 +94,10 @@ export default class Game extends Component<IProps, IState> {
     
     async checkStrikeSpare (score: number) {
         if (score === 10) {
-            // this.setState({ spare: true })
             return true
         } else {
-            // this.setState({ spare: false })
             return false
         }
-
     } 
 
     async setDeadVirusCountScores() {
