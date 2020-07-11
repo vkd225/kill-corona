@@ -74,7 +74,7 @@ export default class Game extends Component<IProps, IState> {
     }
 
     toggleMouseDown = () => {
-        if(!startKilling){
+        if(!startKilling) {
             this.setState({
                 mousedown: !this.state.mousedown
             });
@@ -83,12 +83,14 @@ export default class Game extends Component<IProps, IState> {
     }
 
     toggleMouseUp = async () => {
-        await this.calculateSpraySpeed()
-        await this.killVirus()
-        this.setState({
-            mousedown: !this.state.mousedown,
-            sprayValue: 0
-        });
+        if(!startKilling) {
+            await this.calculateSpraySpeed()
+            await this.killVirus()
+            this.setState({
+                mousedown: !this.state.mousedown,
+                sprayValue: 0
+            });
+        }
     }
 
     calculateSpraySpeed = async () => {
