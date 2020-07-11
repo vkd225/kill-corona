@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.button:focus, .button:active {
+  outline: none !important;
+  box-shadow: none;
+}
+
+.button {
+  border: none !important;
+}
+
+button:focus {outline:0 !important;}

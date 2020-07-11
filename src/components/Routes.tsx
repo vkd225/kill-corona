@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Home from './Home';
 import StartGame from './game/StartGame';
-import Leaderboard from './leaderboard/Leaderboard'
-import PageNotFound from './PageNotFound'
+import Leaderboard from './leaderboard/Leaderboard';
+import PageNotFound from './PageNotFound';
 
 export default class Routes extends Component {
     render() {

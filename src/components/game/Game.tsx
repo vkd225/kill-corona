@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import P5Wrapper from 'react-p5-wrapper';
+import { Row, Col } from 'reactstrap';
 
 import liveCorona from './../../assets/live.png';
 import deadCorona from './../../assets/dead.png';
 import spray from './../../assets/spray.png';
 import water from './../../assets/water.png';
-import { Button } from 'reactstrap';
 
 import Score from './Score';
 import GameOver from './Gameover';
+import SprayGauge from './SprayGauge';
 
-let width = window.innerWidth-40; let height = window.innerHeight-170;
+let width = window.innerWidth-15; let height = window.innerHeight-150;
 let sprayImg; let waterImg; let liveImg; let deadImg;
-let runwater;
+let runwater; 
+let spraySpeed = 0;
 const imgWidth = (width/1560) * 50
 const imgHeight = (height/745) * 100
 let virus = [] as any;
@@ -31,6 +33,8 @@ interface IState {
     spare: boolean;
     strike: boolean;
     prevStrike: boolean;
+    mousedown: boolean;
+    sprayValue: number;
 }
 
 export default class Game extends Component<IProps, IState> {
@@ -46,12 +50,57 @@ export default class Game extends Component<IProps, IState> {
             gameOver: false,
             spare: false,
             strike: false,
-            prevStrike: false
+            prevStrike: false,
+            mousedown: false,
+            sprayValue: 0
         }
     };
 
     async componentDidMount() {
     };
+
+    setSpary = () => {
+        if (this.state.mousedown) {
+            if (this.state.sprayValue < 100){
+                this.setState({ sprayValue: this.state.sprayValue + 1},
+                    () => { window.requestAnimationFrame(this.setSpary) }
+                )
+            }
+        }
+    }
+
+    spraying = () => {
+        window.requestAnimationFrame(this.setSpary);
+    }
+
+    toggleMouseDown = () => {
+        if(!startKilling) {
+            this.setState({
+                mousedown: !this.state.mousedown
+            });
+            this.spraying()
+        }
+    }
+
+    toggleMouseUp = async () => {
+        if(!startKilling) {
+            await this.calculateSpraySpeed()
+            await this.killVirus()
+            this.setState({
+                mousedown: !this.state.mousedown,
+                sprayValue: 0
+            });
+        }
+    }
+
+    calculateSpraySpeed = async () => {
+        spraySpeed = 0.1 * this.state.sprayValue + 3
+        return spraySpeed 
+    }
+
+    killVirus = async () => {
+        startKilling = true;
+    }
 
     moveVirus = () => {
         for (let i=1; i < 11; i++){           
@@ -69,10 +118,6 @@ export default class Game extends Component<IProps, IState> {
         }
     }
 
-    killVirus = () => {
-        startKilling = true;
-    }
-
     getDeadVirusCount = () => {
         let deadVirusCount = 0
         for (let i=0; i<virArr.length; i++ ){
@@ -82,23 +127,14 @@ export default class Game extends Component<IProps, IState> {
         }
         return deadVirusCount
     }
-
-    // Do this if you hit a strike
-    ifStrike = () => {
-
-
-    }
-
+    
     async checkStrikeSpare (score: number) {
         if (score === 10) {
-            // this.setState({ spare: true })
             return true
         } else {
-            // this.setState({ spare: false })
             return false
         }
-
-    } 
+    }
 
     async setDeadVirusCountScores() {
         // send scores to Score component
@@ -276,7 +312,9 @@ export default class Game extends Component<IProps, IState> {
             }
         
             getSpeed() {
-                return ((8/1560)*width);
+                // return speed of spray
+                // return ((8/1560)*width);
+                return spraySpeed
             }
         
             move() {
@@ -304,17 +342,31 @@ export default class Game extends Component<IProps, IState> {
                     (this.state.gameOver) ?
                         <GameOver totalScore={this.state.totalScore} username={this.props.name}/>
                     :
-                    <div style={{ margin: 20, textAlign: "center" }}>
-                        <P5Wrapper sketch={this.sketch} />
-                        <Button size="lg" color="secondary" onClick={this.killVirus}>
+                    <div style={{ margin: 20, marginTop: 5, textAlign: "center" }}>
+                        <Row>
+                            <P5Wrapper sketch={this.sketch} />
+                        </Row>
+                        {/* <Button size="lg" color="secondary" onClick={this.killVirus}>
                             SPRAY
-                        </Button>
-                        <Score 
-                            score ={this.state.scores} 
-                            turn={this.state.turnCount}
-                            totalScore={this.state.totalScore}
-                            name={this.props.name}
-                        />
+                        </Button> */}
+                        <Row style={{ paddingTop: 10}}>
+                            <Col xs="1" sm="1" md="1">
+                                <button
+                                    onMouseDown={this.toggleMouseDown} onMouseUp={this.toggleMouseUp}
+                                    style = {{ border: 'None', backgroundColor: 'Transparent' }}
+                                >
+                                    <SprayGauge sprayValue={this.state.sprayValue} />
+                                </button>
+                            </Col>
+                            <Col>
+                                <Score 
+                                score ={this.state.scores} 
+                                turn={this.state.turnCount}
+                                totalScore={this.state.totalScore}
+                                name={this.props.name}
+                                />
+                            </Col>
+                        </Row>
                     </div>
                 }
             </div>
