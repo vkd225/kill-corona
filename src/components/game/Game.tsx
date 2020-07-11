@@ -351,7 +351,7 @@ export default class Game extends Component<IProps, IState> {
                             <Col xs="1" sm="1" md="1">
                                 <button
                                     onMouseDown={this.toggleMouseDown} onMouseUp={this.toggleMouseUp}
-                                    style = {{ border: 'None' }}
+                                    style = {{ border: 'None', backgroundColor: 'Transparent' }}
                                 >
                                     <SprayGauge sprayValue={this.state.sprayValue} />
                                 </button>
