@@ -23,7 +23,7 @@ export default class Rules extends Component<IProps, IState> {
                 <h5>4. Always have fun !!!</h5>
 
                 <Button style={{ margin: 20, marginLeft: -10 }} onClick={this.goToGame}>
-                    GO BACK
+                    Go Back
                 </Button>                
             </div>
         );

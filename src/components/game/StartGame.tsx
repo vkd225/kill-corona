@@ -78,18 +78,18 @@ export default class StartGame extends Component<IProps, IState> {
 
                             <div style={{ textAlign: 'center', marginTop: 20 }}>
                                 <Button size="lg" color="secondary" style={{ marginRight: 10 }} onClick={this.startGame}>
-                                    START GAME
+                                    Start Game
                                 </Button>
 
                                 <Button size="lg" color="secondary" onClick={this.goToRules}>
-                                    SHOW RULES
+                                    Show Rules
                                 </Button>
                             </div>
                         </Form>
 
                         <div style={{ textAlign: 'center', marginTop: 50 }}>
                             <Button size="lg" color="secondary" onClick={this.goToHome}>
-                                GO BACK HOME
+                                Go Back Home
                             </Button>
                         </div>
 
