@@ -63,7 +63,7 @@ export default class StartGame extends Component<IProps, IState> {
                     (this.state.startGame) ?
                         <Game name={this.state.name}/>
                     :
-                    <div style={{ width:'33%', margin: 'auto', marginTop: '20%' }}>
+                    <div style={{ width:'33%', margin: 'auto', marginTop: '18%' }}>
                         <Form onSubmit={this.startGame}>
                             <Input type="text" id="name" placeholder="Enter your name" required
                                 onChange={this.handleChange}
@@ -87,7 +87,7 @@ export default class StartGame extends Component<IProps, IState> {
                             </div>
                         </Form>
 
-                        <div style={{ textAlign: 'center', marginTop: 20 }}>
+                        <div style={{ textAlign: 'center', marginTop: 50 }}>
                             <Button size="lg" color="secondary" onClick={this.goToHome}>
                                 GO BACK HOME
                             </Button>
