@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { Input, Button, Form } from 'reactstrap';
 import Game from './Game';
 
-interface IProps {
-}
-
 interface IState {
     startGame: boolean;
     name: string;
     error: boolean;
 }
 
+interface IProps {
+    history?: any;
+}
+
 export default class StartGame extends Component<IProps, IState> {
-    constructor (props: IProps) {
+    constructor (props) {
         super(props);
         this.componentDidMount = this.componentDidMount.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -45,7 +46,14 @@ export default class StartGame extends Component<IProps, IState> {
                 startGame: true
             })
         }
-        
+    }
+
+    goToRules = () => {
+        this.props.history.push('/rules')
+    }
+
+    goToHome = () => {
+        this.props.history.push('/')
     }
 
     render() {
@@ -55,28 +63,39 @@ export default class StartGame extends Component<IProps, IState> {
                     (this.state.startGame) ?
                         <Game name={this.state.name}/>
                     :
-                    <div style={{ width:'33%', margin: 'auto', marginTop: '25%' }}>
+                    <div style={{ width:'33%', margin: 'auto', marginTop: '20%' }}>
                         <Form onSubmit={this.startGame}>
-                        <Input type="text" id="name" placeholder="Enter your name" required
-                            onChange={this.handleChange}
-                        />
-                        {(this.state.error)?
-                            <div style={{ color: 'red' }}>
-                                Please enter your name.
-                            </div> 
-                            :
-                            null
-                        }
+                            <Input type="text" id="name" placeholder="Enter your name" required
+                                onChange={this.handleChange}
+                            />
+                            {(this.state.error)?
+                                <div style={{ color: 'red' }}>
+                                    Please enter your name.
+                                </div> 
+                                :
+                                null
+                            }
 
-                        <div style={{ marginLeft: '35%', marginTop: 30 }}>
-                            <Button size="lg" color="secondary" onClick={this.startGame}>
-                                START GAME
+                            <div style={{ textAlign: 'center', marginTop: 20 }}>
+                                <Button size="lg" color="secondary" style={{ marginRight: 10 }} onClick={this.startGame}>
+                                    START GAME
+                                </Button>
+
+                                <Button size="lg" color="secondary" onClick={this.goToRules}>
+                                    SHOW RULES
+                                </Button>
+                            </div>
+                        </Form>
+
+                        <div style={{ textAlign: 'center', marginTop: 20 }}>
+                            <Button size="lg" color="secondary" onClick={this.goToHome}>
+                                GO BACK HOME
                             </Button>
                         </div>
-                        </Form>
 
                     </div>
                 }
+
             </div>
         );
     }
